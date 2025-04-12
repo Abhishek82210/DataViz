@@ -19,6 +19,7 @@
 | Build Tools     | Maven, npm               |
 
 ## 📁 Project Structure
+```
 data-visualization/
 ├── backend/ # Spring Boot Application
 │ ├── src/
@@ -50,7 +51,7 @@ data-visualization/
 │ └── README.md
 │
 └── README.md # This file
-
+```
 
 ## 🖥️ System Requirements
 - Java 17+
