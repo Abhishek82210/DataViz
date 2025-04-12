@@ -98,10 +98,10 @@ Humidity,60
 Pressure,1013.2
 ```
 ## 🚨 Troubleshooting Error	Solution
-``
+```
 "category is not a scale"	--> Update Chart.js registrations
 MySQL connection failed	--> Verify credentials in application.properties
 WebSocket disconnect	--> Check Spring Boot logs
-``
+```
 
 ##Happy Visualizing! 🎉
