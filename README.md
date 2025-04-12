@@ -69,31 +69,32 @@ spring.datasource.username=your_username
 spring.datasource.password=your_password
 
 mvn spring-boot:run
-
-Frontend Setup
-
+```
+##Frontend Setup
+```
 cd frontend
 npm install
 npm start
-
-🌐 API Endpoints
+```
+##🌐 API Endpoints
+```
 Endpoint	Method	Description
 /api/data/upload	POST	Upload CSV file
 /api/data/{dataset}	GET	Retrieve dataset
 /ws	WS	WebSocket connection for updates
+```
 
-
-📊 Sample CSV Format
-
+##📊 Sample CSV Format
+```
 category,value
 Temperature,25.5
 Humidity,60
 Pressure,1013.2
-
-🚨 Troubleshooting
+```
+##🚨 Troubleshooting
 Error	Solution
 "category is not a scale"	Update Chart.js registrations
 MySQL connection failed	Verify credentials in application.properties
 WebSocket disconnect	Check Spring Boot logs
 
-Happy Visualizing! 🎉
+##Happy Visualizing! 🎉
