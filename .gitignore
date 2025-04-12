@@ -1,0 +1,48 @@
+# ========================
+# FRONTEND (React - datavfront)
+# ========================
+
+# Node modules and build
+/datavfront/node_modules/
+/datavfront/build/
+/datavfront/dist/
+
+# Environment files
+/datavfront/.env
+
+# Dependency lock (optional)
+/datavfront/package-lock.json
+/datavfront/yarn.lock
+
+# Editor settings
+/datavfront/.vscode/
+/datavfront/.idea/
+
+# ========================
+# BACKEND (Spring Boot - data-visualization)
+# ========================
+
+# Build output
+/data-visualization/target/
+
+# IDE specific
+/data-visualization/.idea/
+/data-visualization/*.iml
+/data-visualization/.classpath
+/data-visualization/.project
+
+# OS-specific
+/data-visualization/.DS_Store
+
+# Logs
+/data-visualization/*.log
+
+# Application secrets
+/data-visualization/application.properties
+/data-visualization/.env
+
+# ========================
+# GLOBAL (Both)
+/*.DS_Store
+*.log
+Thumbs.db
