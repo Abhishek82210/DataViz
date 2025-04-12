@@ -1,0 +1,97 @@
+/* Main container */
+.chart-section {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin: 20px 0;
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  /* Title */
+  .chart-section h2 {
+    color: #2c3e50;
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 1.8rem;
+  }
+  
+  /* Chart type buttons */
+  .chart-type-selector {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  
+  .chart-type-selector button {
+    padding: 8px 16px;
+    background: #3498db;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s ease;
+  }
+  
+  .chart-type-selector button:hover {
+    background: #2980b9;
+    transform: translateY(-2px);
+  }
+  
+  .chart-type-selector button.active {
+    background: #2c3e50;
+  }
+  
+  /* Chart container */
+  .chart-container {
+    height: 500px;
+    width: 100%;
+    position: relative;
+    margin: 0 auto;
+  }
+  
+  /* Data table styling */
+  .data-table {
+    margin-top: 30px;
+    overflow-x: auto;
+  }
+  
+  .data-table table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .data-table th, 
+  .data-table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #e0e0e0;
+  }
+  
+  .data-table th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+  }
+  
+  .data-table tr:hover {
+    background-color: #f5f5f5;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .chart-section {
+      padding: 15px;
+    }
+    
+    .chart-container {
+      height: 350px;
+    }
+    
+    .chart-type-selector {
+      flex-wrap: wrap;
+    }
+  }
