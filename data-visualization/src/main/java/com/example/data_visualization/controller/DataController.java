@@ -12,7 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/data")
-@CrossOrigin(origins = "https://data-9dtjbaj4r-abhishek82210s-projects.vercel.app/")
+@CrossOrigin(origins = "https://data-9dtjbaj4r-abhishek82210s-projects.vercel.app")
 public class DataController {
 
     @Autowired
