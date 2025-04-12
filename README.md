@@ -1,6 +1,11 @@
 # Real-Time Data Visualization Platform
 
-<img src="[Screenshot 2025-04-12 144201](https://github.com/user-attachments/assets/071a9a24-f64a-4fd7-8d79-38c27126b8d6)" width="300" height="300" />
+![Screenshot 2025-04-12 144201](https://github.com/user-attachments/assets/0bb2b004-60e5-4128-9a12-190e9ce8da09)
+![Screenshot 2025-04-12 144350](https://github.com/user-attachments/assets/0bc07c41-f553-44ab-808f-82d0f44ac2db)
+![Screenshot 2025-04-12 144308](https://github.com/user-attachments/assets/f193ae7b-0fe5-41fd-b1a4-74ea401920e7)
+![Screenshot 2025-04-12 144247](https://github.com/user-attachments/assets/3822c804-4b62-4ea5-8048-6e73d39e36fe)
+![Screenshot 2025-04-12 144438](https://github.com/user-attachments/assets/1a5a07fa-6feb-4a9e-b9d5-71d4b97feb12)
+
  
 *Visualize CSV data in real-time with interactive charts*
 
