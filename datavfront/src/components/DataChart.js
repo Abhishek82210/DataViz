@@ -32,7 +32,8 @@ const DataChart = ({ datasetName }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`http://localhost:8080/api/data/${datasetName}`);
+         const response = await axios.get(`https://dataviz-wcmx.onrender.com/api/data/${datasetName}`);
+                                                                   //const response = await axios.get(`http://localhost:8080/api/data/${datasetName}`);
         setData(response.data);
       } catch (error) {
         console.error("Error fetching data:", error);
