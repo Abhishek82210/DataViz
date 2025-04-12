@@ -1,6 +1,6 @@
 # Real-Time Data Visualization Platform
 
-<img src="![Screenshot 2025-04-12 144201](https://github.com/user-attachments/assets/071a9a24-f64a-4fd7-8d79-38c27126b8d6)
+<img src="[Screenshot 2025-04-12 144201](https://github.com/user-attachments/assets/071a9a24-f64a-4fd7-8d79-38c27126b8d6)
 " width="300" height="300" />
  
 *Visualize CSV data in real-time with interactive charts*
