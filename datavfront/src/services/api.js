@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Create axios instance with base URL
 const api = axios.create({
-  baseURL: `https://dataviz-wcmx.onrender.com/api/data/${datasetName}`, // Your Spring Boot backend URL
+  baseURL: `https://dataviz-wcmx.onrender.com/api/data/${datasetName}`, //  Spring Boot backend URL
   headers: {
     'Content-Type': 'application/json'
   }
