@@ -74,6 +74,7 @@ spring.datasource.url=jdbc:mysql://localhost:3306/datavis_db
 spring.datasource.username=your_username
 spring.datasource.password=your_password
 
+# for running the backend
 mvn spring-boot:run
 ```
 ## Frontend Setup
