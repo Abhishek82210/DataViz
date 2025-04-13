@@ -27,6 +27,11 @@ const DataUpload = ({ onUploadSuccess }) => {
       return;
     }
 
+    if (datasetName.trim().toLowerCase() === 'upload') {
+      setMessage({ text: "'upload' is a reserved dataset name", isError: true });
+      return;
+    }
+
     const formData = new FormData();
     formData.append('file', file);
     formData.append('datasetName', datasetName.trim());
@@ -47,13 +52,19 @@ const DataUpload = ({ onUploadSuccess }) => {
         }
       );
 
-      // Handle successful response
-      if (response.data?.message) {
+      if (typeof response.data === 'string') {
+        setMessage({ text: response.data, isError: false });
+      } else if (response.data?.message) {
         setMessage({ text: response.data.message, isError: false });
-        onUploadSuccess(datasetName.trim());
-        resetForm();
+      } else {
+        setMessage({ text: 'Upload successful', isError: false });
       }
 
+      if (typeof onUploadSuccess === 'function') {
+        onUploadSuccess(datasetName.trim());
+      }
+
+      resetForm();
     } catch (error) {
       handleApiError(error);
     } finally {
@@ -64,21 +75,30 @@ const DataUpload = ({ onUploadSuccess }) => {
   const handleApiError = (error) => {
     let errorMsg = 'Upload failed';
 
-    if (error.response) {
-      // Handle structured error responses
-      const responseData = error.response.data;
-      errorMsg = responseData?.error || 
-                responseData?.message || 
-                'Server error occurred';
-      
-      // Special cases
-      if (error.response.status === 413) {
-        errorMsg = 'File too large (max 10MB)';
+    try {
+      if (error.response) {
+        const responseData = error.response.data;
+
+        if (typeof responseData === 'string') {
+          errorMsg = responseData;
+        } else if (typeof responseData === 'object') {
+          errorMsg = responseData?.error || responseData?.message || 'Server error occurred';
+        }
+
+        if (error.response.status === 413) {
+          errorMsg = 'File too large (max 10MB)';
+        }
+
+      } else if (error.code === 'ECONNABORTED') {
+        errorMsg = 'Request timed out';
+      } else if (error.request) {
+        errorMsg = 'No server response';
+      } else {
+        errorMsg = error.message || 'Unknown error occurred';
       }
-    } else if (error.code === 'ECONNABORTED') {
-      errorMsg = 'Request timed out';
-    } else if (error.request) {
-      errorMsg = 'No server response';
+    } catch (err) {
+      console.error("Error handling the API error:", err);
+      errorMsg = 'An unexpected error occurred';
     }
 
     setMessage({ text: errorMsg, isError: true });
@@ -92,7 +112,7 @@ const DataUpload = ({ onUploadSuccess }) => {
   return (
     <div className="upload-container">
       <h2>Upload Data</h2>
-      
+
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label>Dataset Name:</label>
