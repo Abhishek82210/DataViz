@@ -8,15 +8,17 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 @EnableWebMvc
 public class WebConfig implements WebMvcConfigurer {
-
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-            .allowedOrigins("*") // ✅ Allow all origins temporarily
-            .allowedMethods("*")
+            .allowedOrigins(
+                "https://data-4vodi8tam-abhishek82210s-projects.vercel.app", // Updated frontend URL
+                "http://localhost:3000"
+            )
+            .allowedMethods("*")       // Allow all HTTP methods
             .allowedHeaders("*")
             .exposedHeaders("Access-Control-Allow-Origin", "Access-Control-Allow-Credentials")
-            .allowCredentials(false) // ❗ Must be false when using "*"
+            .allowCredentials(true)
             .maxAge(4800);
     }
 }
