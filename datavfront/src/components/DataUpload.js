@@ -8,8 +8,56 @@ const DataUpload = ({ onUploadSuccess }) => {
   const [message, setMessage] = useState({ text: '', isError: false });
   const [isUploading, setIsUploading] = useState(false);
 
+  const resetForm = () => {
+    setDatasetName('');
+    setFile(null);
+  };
+
+  const handleApiError = (error) => {
+    let errorMsg = 'Upload failed';
+
+    try {
+      if (error.response) {
+        const responseData = error.response.data;
+
+        if (typeof responseData === 'string') {
+          // Only call .includes if responseData is a string
+          if (responseData.includes("extension")) {
+            errorMsg = "Please upload a valid .csv file";
+          } else {
+            errorMsg = responseData;
+          }
+        } else if (typeof responseData === 'object' && responseData !== null) {
+          errorMsg = responseData.error || responseData.message || 'Server error occurred';
+        } else {
+          errorMsg = 'Server error occurred';
+        }
+
+        // Handle specific status codes
+        if (error.response.status === 405) {
+          errorMsg = 'Upload method not allowed. Please check the backend endpoint.';
+        } else if (error.response.status === 413) {
+          errorMsg = 'File too large (max 10MB)';
+        }
+      } else if (error.code === 'ECONNABORTED') {
+        errorMsg = 'Request timed out';
+      } else if (error.request) {
+        errorMsg = 'No server response';
+      } else {
+        errorMsg = error.message || 'Unknown error occurred';
+      }
+    } catch (err) {
+      console.error('Error parsing error response:', err);
+      errorMsg = 'An unexpected error occurred';
+    }
+
+    setMessage({ text: errorMsg, isError: true });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const trimmedName = datasetName.trim();
 
     // Validation
     if (!file) {
@@ -22,14 +70,20 @@ const DataUpload = ({ onUploadSuccess }) => {
       return;
     }
 
-    if (!datasetName.trim()) {
+    if (!trimmedName) {
       setMessage({ text: 'Dataset name is required', isError: true });
+      return;
+    }
+
+    // Optional: Prevent using reserved name "upload" (if necessary)
+    if (trimmedName.toLowerCase() === 'upload') {
+      setMessage({ text: "'upload' is a reserved dataset name", isError: true });
       return;
     }
 
     const formData = new FormData();
     formData.append('file', file);
-    formData.append('datasetName', datasetName.trim());
+    formData.append('datasetName', trimmedName);
 
     setIsUploading(true);
     setMessage({ text: 'Uploading...', isError: false });
@@ -39,19 +93,25 @@ const DataUpload = ({ onUploadSuccess }) => {
         'https://dataviz-wcmx.onrender.com/api/data/upload',
         formData,
         {
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          },
+          headers: { 'Content-Type': 'multipart/form-data' },
           timeout: 30000,
           withCredentials: true
         }
       );
 
-      if (response.data?.message) {
-        setMessage({ text: response.data.message, isError: false });
-        onUploadSuccess(datasetName.trim());
-        resetForm();
+      // Handle successful response
+      let resMessage = 'Upload successful';
+      if (typeof response.data === 'string') {
+        resMessage = response.data;
+      } else if (response.data?.message) {
+        resMessage = response.data.message;
       }
+      setMessage({ text: resMessage, isError: false });
+      
+      if (typeof onUploadSuccess === 'function') {
+        onUploadSuccess(trimmedName);
+      }
+      resetForm();
 
     } catch (error) {
       handleApiError(error);
@@ -60,44 +120,9 @@ const DataUpload = ({ onUploadSuccess }) => {
     }
   };
 
-  const handleApiError = (error) => {
-    let errorMsg = 'Upload failed';
-
-    if (error.response) {
-      const responseData = error.response.data;
-      if (typeof responseData === 'string') {
-        errorMsg = responseData;
-      } else if (typeof responseData === 'object') {
-        errorMsg = responseData?.error || responseData?.message || 'Server error occurred';
-      }
-
-      if (error.response.status === 405) {
-        errorMsg = 'Invalid request method or URL. Please check the endpoint.';
-      }
-
-      if (error.response.status === 413) {
-        errorMsg = 'File too large (max 10MB)';
-      }
-    } else if (error.code === 'ECONNABORTED') {
-      errorMsg = 'Request timed out';
-    } else if (error.request) {
-      errorMsg = 'No server response';
-    } else {
-      errorMsg = error.message || 'Unknown error occurred';
-    }
-
-    setMessage({ text: errorMsg, isError: true });
-  };
-
-  const resetForm = () => {
-    setDatasetName('');
-    setFile(null);
-  };
-
   return (
     <div className="upload-container">
       <h2>Upload Data</h2>
-
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label>Dataset Name:</label>
