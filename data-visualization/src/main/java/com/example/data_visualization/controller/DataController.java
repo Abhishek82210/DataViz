@@ -12,7 +12,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/data")
-@CrossOrigin(origins = "https://data-9dtjbaj4r-abhishek82210s-projects.vercel.app")
 public class DataController {
 
     @Autowired
@@ -27,19 +26,16 @@ public class DataController {
             @RequestPart("datasetName") String datasetName) {
 
         try {
-            // Validate file exists
             if (file.isEmpty()) {
                 return ResponseEntity.badRequest().body("File is empty");
             }
 
-            // Validate filename
             String filename = file.getOriginalFilename();
             if (filename == null || !filename.toLowerCase().endsWith(".csv")) {
                 return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
                         .body("File must have .csv extension");
             }
 
-            // Process valid file
             dataService.processCSV(file, datasetName);
             notifyClients(datasetName);
 
@@ -60,7 +56,6 @@ public class DataController {
         }
     }
 
-    // WebSocket notification method
     private void notifyClients(String datasetName) {
         try {
             List<DataEntry> data = dataService.getDataByDataset(datasetName);
@@ -70,7 +65,6 @@ public class DataController {
         }
     }
 
-    // Health check endpoint
     @GetMapping("/health")
     public ResponseEntity<String> healthCheck() {
         return ResponseEntity.ok("Service is healthy");
