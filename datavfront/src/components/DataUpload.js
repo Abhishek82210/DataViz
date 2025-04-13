@@ -26,6 +26,11 @@ const DataUpload = ({ onUploadSuccess }) => {
       return;
     }
 
+    if (datasetName.trim().toLowerCase() === 'upload') {
+      setMessage({ text: "'upload' is a reserved dataset name", isError: true });
+      return;
+    }
+
     const formData = new FormData();
     formData.append('file', file);
     formData.append('datasetName', datasetName.trim());
@@ -35,7 +40,7 @@ const DataUpload = ({ onUploadSuccess }) => {
 
     try {
       const response = await axios.post(
-        'https://dataviz-wcmx.onrender.com/api/data/upload', // ✅ fixed URL
+        'https://dataviz-wcmx.onrender.com/api/data/upload',
         formData,
         {
           headers: {
@@ -51,21 +56,32 @@ const DataUpload = ({ onUploadSuccess }) => {
       setDatasetName('');
       setFile(null);
     } catch (error) {
+      console.error("Upload error:", error);
+
       let errorMsg = 'Upload failed';
 
       if (error.response) {
-        errorMsg = error.response.data;
+        const serverMessage = error.response.data;
+        if (typeof serverMessage === 'string') {
+          if (serverMessage.includes("upload")) {
+            errorMsg = "Dataset name cannot be 'upload'";
+          } else if (serverMessage.includes("extension")) {
+            errorMsg = "Please upload a valid .csv file";
+          } else {
+            errorMsg = serverMessage;
+          }
+        } else {
+          errorMsg = "Server returned an unexpected error format";
+        }
       } else if (error.request) {
-        errorMsg = 'No response from server';
+        errorMsg = 'No response from server. Please try again later.';
       } else {
         errorMsg = error.message;
       }
 
-      setMessage({ 
-        text: errorMsg.includes("extension") 
-              ? "Please upload a valid .csv file" 
-              : errorMsg,
-        isError: true 
+      setMessage({
+        text: errorMsg,
+        isError: true
       });
     } finally {
       setIsUploading(false);
@@ -103,8 +119,8 @@ const DataUpload = ({ onUploadSuccess }) => {
           )}
         </div>
 
-        <button 
-          type="submit" 
+        <button
+          type="submit"
           disabled={isUploading || !file || !datasetName.trim()}
         >
           {isUploading ? (
