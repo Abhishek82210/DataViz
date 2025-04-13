@@ -16,22 +16,38 @@ const DataUpload = ({ onUploadSuccess }) => {
   const handleApiError = (error) => {
     let errorMsg = 'Upload failed';
 
-    if (error.response) {
-      const responseData = error.response.data;
-      errorMsg =
-        responseData?.error ||
-        responseData?.message ||
-        'Server error occurred';
+    try {
+      if (error.response) {
+        const responseData = error.response.data;
+        if (typeof responseData === 'string') {
+          // Only call .includes if responseData is a string
+          if (responseData.includes("extension")) {
+            errorMsg = "Please upload a valid .csv file";
+          } else {
+            errorMsg = responseData;
+          }
+        } else if (typeof responseData === 'object' && responseData !== null) {
+          errorMsg = responseData.error || responseData.message || 'Server error occurred';
+        } else {
+          errorMsg = 'Server error occurred';
+        }
 
-      if (error.response.status === 413) {
-        errorMsg = 'File too large (max 10MB)';
-      } else if (error.response.status === 405) {
-        errorMsg = 'Upload method not allowed. Check backend route.';
+        if (error.response.status === 413) {
+          errorMsg = 'File too large (max 10MB)';
+        } else if (error.response.status === 405) {
+          errorMsg = 'Upload method not allowed. Check backend route.';
+        }
+
+      } else if (error.code === 'ECONNABORTED') {
+        errorMsg = 'Request timed out';
+      } else if (error.request) {
+        errorMsg = 'No server response';
+      } else {
+        errorMsg = error.message || 'Unknown error occurred';
       }
-    } else if (error.code === 'ECONNABORTED') {
-      errorMsg = 'Request timed out';
-    } else if (error.request) {
-      errorMsg = 'No server response';
+    } catch (err) {
+      console.error('Error parsing error response:', err);
+      errorMsg = 'An unexpected error occurred';
     }
 
     setMessage({ text: errorMsg, isError: true });
@@ -42,7 +58,7 @@ const DataUpload = ({ onUploadSuccess }) => {
 
     const trimmedName = datasetName.trim();
 
-    // Validation
+    // Basic validations
     if (!file) {
       setMessage({ text: 'Please select a file', isError: true });
       return;
@@ -55,6 +71,11 @@ const DataUpload = ({ onUploadSuccess }) => {
 
     if (!trimmedName) {
       setMessage({ text: 'Dataset name is required', isError: true });
+      return;
+    }
+
+    if (trimmedName.toLowerCase() === 'upload') {
+      setMessage({ text: "'upload' is a reserved dataset name", isError: true });
       return;
     }
 
@@ -76,13 +97,17 @@ const DataUpload = ({ onUploadSuccess }) => {
         }
       );
 
-      if (response.data?.message) {
-        setMessage({ text: response.data.message, isError: false });
+      // Handle successful response (if response.data is an object, try to use its message)
+      const resMessage = 
+        typeof response.data === 'string'
+          ? response.data
+          : (response.data?.message || 'Upload successful');
+      
+      setMessage({ text: resMessage, isError: false });
+      if (typeof onUploadSuccess === 'function') {
         onUploadSuccess(trimmedName);
-        resetForm();
-      } else {
-        setMessage({ text: 'Upload completed', isError: false });
       }
+      resetForm();
     } catch (error) {
       handleApiError(error);
     } finally {
@@ -93,6 +118,7 @@ const DataUpload = ({ onUploadSuccess }) => {
   return (
     <div className="upload-container">
       <h2>Upload Data</h2>
+      
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label>Dataset Name:</label>
