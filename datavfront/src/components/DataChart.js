@@ -12,7 +12,7 @@ import {
   Legend
 } from 'chart.js';
 import { Line, Bar, Pie } from 'react-chartjs-2';
-import './DataChart.css'; // Import the CSS
+import './DataChart.css';
 
 ChartJS.register(
   CategoryScale,
@@ -32,7 +32,7 @@ const DataChart = ({ datasetName }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-         const response = await axios.get(`https://dataviz-wcmx.onrender.com/api/data/${datasetName}`);                                                        
+        const response = await axios.get(`https://dataviz-wcmx.onrender.com/api/data/upload`);
         setData(response.data);
       } catch (error) {
         console.error("Error fetching data:", error);
