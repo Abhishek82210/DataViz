@@ -13,7 +13,7 @@ public class WebConfig implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
             .allowedOrigins(
-                "https://data-cbodtwzga-abhishek82210s-projects.vercel.app",
+                "https://data-4vodi8tam-abhishek82210s-projects.vercel.app",  // Updated frontend URL
                 "http://localhost:3000"
             )
             .allowedMethods("*") // Allow all HTTP methods
