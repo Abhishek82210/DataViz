@@ -13,42 +13,28 @@ const DataUpload = ({ onUploadSuccess }) => {
     setFile(null);
   };
 
+  // Updated error handler: we convert error response to string if needed.
   const handleApiError = (error) => {
     let errorMsg = 'Upload failed';
 
-    try {
-      if (error.response) {
-        const responseData = error.response.data;
-
-        if (typeof responseData === 'string') {
-          // Only call .includes if responseData is a string
-          if (responseData.includes("extension")) {
-            errorMsg = "Please upload a valid .csv file";
-          } else {
-            errorMsg = responseData;
-          }
-        } else if (typeof responseData === 'object' && responseData !== null) {
-          errorMsg = responseData.error || responseData.message || 'Server error occurred';
-        } else {
-          errorMsg = 'Server error occurred';
-        }
-
-        // Handle specific status codes
-        if (error.response.status === 405) {
-          errorMsg = 'Upload method not allowed. Please check the backend endpoint.';
-        } else if (error.response.status === 413) {
-          errorMsg = 'File too large (max 10MB)';
-        }
-      } else if (error.code === 'ECONNABORTED') {
-        errorMsg = 'Request timed out';
-      } else if (error.request) {
-        errorMsg = 'No server response';
-      } else {
-        errorMsg = error.message || 'Unknown error occurred';
+    if (error.response) {
+      let responseData = error.response.data;
+      // Convert to string if not already a string
+      if (typeof responseData !== 'string') {
+        responseData = JSON.stringify(responseData);
       }
-    } catch (err) {
-      console.error('Error parsing error response:', err);
-      errorMsg = 'An unexpected error occurred';
+      errorMsg = responseData;
+      if (error.response.status === 405) {
+        errorMsg = 'Upload method not allowed. Check backend endpoint.';
+      } else if (error.response.status === 413) {
+        errorMsg = 'File too large (max 10MB)';
+      }
+    } else if (error.code === 'ECONNABORTED') {
+      errorMsg = 'Request timed out';
+    } else if (error.request) {
+      errorMsg = 'No server response';
+    } else {
+      errorMsg = error.message || 'Unknown error occurred';
     }
 
     setMessage({ text: errorMsg, isError: true });
@@ -59,23 +45,20 @@ const DataUpload = ({ onUploadSuccess }) => {
 
     const trimmedName = datasetName.trim();
 
-    // Validation
+    // Basic validation
     if (!file) {
       setMessage({ text: 'Please select a file', isError: true });
       return;
     }
-
     if (!file.name.toLowerCase().endsWith('.csv')) {
       setMessage({ text: 'Only CSV files are allowed', isError: true });
       return;
     }
-
     if (!trimmedName) {
       setMessage({ text: 'Dataset name is required', isError: true });
       return;
     }
-
-    // Optional: Prevent using reserved name "upload" (if necessary)
+    // Prevent using reserved dataset name "upload" if needed.
     if (trimmedName.toLowerCase() === 'upload') {
       setMessage({ text: "'upload' is a reserved dataset name", isError: true });
       return;
@@ -99,11 +82,11 @@ const DataUpload = ({ onUploadSuccess }) => {
         }
       );
 
-      // Handle successful response
+      // Handle successful response.
       let resMessage = 'Upload successful';
       if (typeof response.data === 'string') {
         resMessage = response.data;
-      } else if (response.data?.message) {
+      } else if (response.data && response.data.message) {
         resMessage = response.data.message;
       }
       setMessage({ text: resMessage, isError: false });
@@ -111,8 +94,8 @@ const DataUpload = ({ onUploadSuccess }) => {
       if (typeof onUploadSuccess === 'function') {
         onUploadSuccess(trimmedName);
       }
+      
       resetForm();
-
     } catch (error) {
       handleApiError(error);
     } finally {
@@ -123,6 +106,7 @@ const DataUpload = ({ onUploadSuccess }) => {
   return (
     <div className="upload-container">
       <h2>Upload Data</h2>
+
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label>Dataset Name:</label>
