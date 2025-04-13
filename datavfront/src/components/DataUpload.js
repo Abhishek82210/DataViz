@@ -10,8 +10,7 @@ const DataUpload = ({ onUploadSuccess }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    // Client-side validation
+
     if (!file) {
       setMessage({ text: 'Please select a file', isError: true });
       return;
@@ -36,34 +35,29 @@ const DataUpload = ({ onUploadSuccess }) => {
 
     try {
       const response = await axios.post(
-        `https://dataviz-wcmx.onrender.com/api/data/${datasetName}`,
+        'https://dataviz-wcmx.onrender.com/api/data/upload', // ✅ fixed URL
         formData,
         {
           headers: {
             'Content-Type': 'multipart/form-data'
           },
-          timeout: 30000 // 30 seconds timeout
+          timeout: 30000
         }
       );
 
       setMessage({ text: response.data, isError: false });
       onUploadSuccess(datasetName);
-      
-      // Reset form
+
       setDatasetName('');
       setFile(null);
-      
     } catch (error) {
       let errorMsg = 'Upload failed';
-      
+
       if (error.response) {
-        // Backend returned error
         errorMsg = error.response.data;
       } else if (error.request) {
-        // No response received
         errorMsg = 'No response from server';
       } else {
-        // Other errors
         errorMsg = error.message;
       }
 
@@ -81,7 +75,7 @@ const DataUpload = ({ onUploadSuccess }) => {
   return (
     <div className="upload-container">
       <h2>Upload Data</h2>
-      
+
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label>Dataset Name:</label>
