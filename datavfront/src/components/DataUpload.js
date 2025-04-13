@@ -36,7 +36,7 @@ const DataUpload = ({ onUploadSuccess }) => {
 
     try {
       const response = await axios.post(
-        'http://localhost:8080/api/data/upload',
+        `https://dataviz-wcmx.onrender.com/api/data/${datasetName}`,
         formData,
         {
           headers: {
