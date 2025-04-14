@@ -19,7 +19,7 @@ const DataUpload = () => {
 
     try {
       const response = await axios.post(
-        "https://dataviz-wcmx.onrender.com/api/data/upload",
+        "https://wandering-jackelyn-my-backend-b9f6cca0.koyeb.app/api/data/upload",
         formData,
         {
           headers: {
