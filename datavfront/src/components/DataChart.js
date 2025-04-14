@@ -33,7 +33,7 @@ const DataChart = ({ datasetName }) => {
     const fetchData = async () => {
       try {
         // Use the GET endpoint that accepts datasetName as a path variable
-        const response = await axios.get(`https://dataviz-wcmx.onrender.com/api/data/${datasetName}`);
+        const response = await axios.get(`https://wandering-jackelyn-my-backend-b9f6cca0.koyeb.app/${datasetName}`);
         setData(response.data);
       } catch (error) {
         console.error("Error fetching data:", error);
