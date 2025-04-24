@@ -105,4 +105,4 @@ MySQL connection failed	--> Verify credentials in application.properties
 WebSocket disconnect	--> Check Spring Boot logs
 ```
 
-##Happy Visualizing! 🎉
+## Happy Visualizing! 🎉
